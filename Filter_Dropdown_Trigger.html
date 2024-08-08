@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdown Filter</title>
+    <link rel="stylesheet" href="../../UI/axpertUI/plugins.bundle.css">
+    <link rel="stylesheet" href="../../UI/axpertUI/style.bundle.css">
+    <link rel="stylesheet" href="../../ThirdParty/jquery-confirm-master/jquery-confirm.min.css">
+    <script type="text/javascript" src="../../UI/axpertUI/plugins.bundle.js"></script>
+    <script type="text/javascript" src="../../UI/axpertUI/scripts.bundle.js"></script>
+    <script type="text/javascript" src="../../Js/noConflict.min.js"></script>
+    <script type="text/javascript" src="../../ThirdParty/jquery-confirm-master/jquery-confirm.min.js"></script>
+    <script type="text/javascript" src="../../Js/alerts.min.js"></script>
+    <script type="text/javascript" src="../../Js/common.min.js?v=13301"></script>
+    <script src="../../AxpertAPIs/js/AxpertAPIs.js?v=1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: hsla(201, 100%, 97%, 0.302);
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .dropdown-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .dropdown-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            flex: 1;
+        }
+
+        label {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: hsl(0, 0%, 20%);
+        }
+
+        .dropdown {
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            border-radius: 7px;
+            transition: all ease 0.3s;
+            box-shadow: 0 2px 15px 6px hsla(0, 0%, 95%, 0.712);
+            border: 2px solid hsl(47, 100%, 50%);
+            background-color: white;
+            color: hsl(0, 0%, 20%);
+        }
+
+        .dropdown:focus {
+            outline: none;
+            border-color: hsl(47, 100%, 50%);
+        }
+
+        .dropdown option {
+            background-color: white;
+            color: hsl(0, 0%, 20%);
+            font-weight: 500;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+        .description {
+            font-size: 16px;
+            color: hsl(0, 0%, 20%);
+            margin-top: 10px;
+            text-align: center;
+            font-weight: 800;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px 6px hsla(0, 0%, 95%, 0.712);
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid hsla(0, 0%, 87%, 0.788);
+        }
+
+        th {
+            font-weight: bold;
+            background-color: hsla(42, 93%, 77%, 0.842);
+        }
+
+        tr:nth-child(even) {
+            background-color: hsl(184, 58.77%, 94.27%);
+        }
+
+        tr:hover {
+            background-color: hsla(0, 0%, 95%, 0.938);
+        }
+
+        .loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 16px solid hsl(229, 13%, 67%);
+            border-top: 16px solid hsl(231, 12%, 42%);
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            animation: spin 2s linear infinite;
+            display: none;
+            z-index: 1000;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Style for the Go button */
+        .go-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background-color: hsl(47, 100%, 50%);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .go-button:hover {
+            background-color: hsl(47, 100%, 60%);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="loader" id="loader"></div>
+
+    <div class="dropdown-container">
+        <div class="dropdown-group">
+            <label id="departmentname" for="deptDropdown"></label>
+            <select id="deptDropdown" class="dropdown" required="">
+                <!-- Options will be added dynamically -->
+            </select>
+        </div>
+        <div class="dropdown-group">
+            <label id="projectname" for="projDropdown"></label>
+            <select id="projDropdown" class="dropdown" required="">
+                <!-- Options will be added dynamically -->
+            </select>
+        </div>
+        <div class="dropdown-group">
+            <label id="fundingAgency" for="costDropdown"></label>
+            <select id="costDropdown" class="dropdown" required="">
+                <!-- Options will be added dynamically -->
+            </select>
+        </div>
+    </div>
+
+    <!-- Go Button -->
+    <button class="go-button" id="goButton">Go</button>
+
+    <div id="reportDescription" class="description"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            const departmentLabel = document.getElementById('departmentname');
+            const deptDropdown = document.getElementById('deptDropdown');
+            const projectLabel = document.getElementById('projectname');
+            const projDropdown = document.getElementById('projDropdown');
+            const agencyLabel = document.getElementById('fundingAgency');
+            const costDropdown = document.getElementById('costDropdown');
+            const itemDescription = document.getElementById('reportDescription');
+            const loader = document.getElementById('loader');
+            const goButton = document.getElementById('goButton');
+
+            let projectCostData = [];
+
+            // Function to convert a string to title case
+            const toTitleCase = (text) => {
+                return text.replace(
+                    /\w\S*/g,
+                    text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
+                );
+            };
+
+            // Show the loading spinner
+            const hideLoaderWithDelay = (delay, callback) => {
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    if (callback) callback();
+                }, delay);
+            };
+
+            const showLoader = () => {
+                loader.style.display = 'block';
+            };
+
+            const hideLoader = (callback) => {
+                hideLoaderWithDelay(1000, callback);
+            };
+
+            // Fetch departments and populate the dropdown
+            const fetchDepartments = async () => {
+                showLoader();
+                try {
+                    const response = await AxCallSqlDataAPI('AXPKEY000000010018');
+                    const department = JSON.parse(response).getdepartment.rows;
+                    departmentLabel.innerHTML = department[0]["Departments"];
+
+                    if (department && Array.isArray(department)) {
+                        // Add "ALL" option dynamically
+                        const allOption = document.createElement('option');
+                        allOption.value = 'ALL';
+                        allOption.textContent = 'ALL';
+                        deptDropdown.appendChild(allOption);
+
+                        // Populate the department dropdown with department data
+                        department.forEach(dept => {
+                            const option = document.createElement('option');
+                            const keys = Object.keys(dept);
+                            // Dynamically set the value and text content using indices
+                            const valueKey = keys[1];
+                            const textKey = keys[0];
+                            option.value = dept[valueKey];
+                            option.textContent = dept[textKey];
+                            deptDropdown.appendChild(option);
+                            departmentLabel.innerHTML = toTitleCase(textKey);
+                        });
+
+                    } else {
+                        console.error('Department data is not available.');
+                    }
+                } catch (error) {
+                    console.error('Error fetching departments:', error);
+                } finally {
+                    hideLoader(() => {
+                        // Callback to handle post-loader actions if needed
+                    });
+                }
+            }
+
+            // Fetch projects based on department
+            const updateProject = async (departmentId) => {
+                showLoader();
+                try {
+                    const params = { deptid: departmentId };
+                    const result = await AxCallSqlDataAPI('AXPKEY000000010018', params);
+                    const projectData = JSON.parse(result).getproject.rows;
+
+                    // Clear previous project options and add "ALL" option
+                    projDropdown.innerHTML = '<option value="ALL">ALL</option>';
+                    costDropdown.innerHTML = '<option value="ALL">ALL</option>';
+
+                    // Clear table
+                    itemDescription.innerHTML = '';
+
+                    if (projectData && Array.isArray(projectData)) {
+                        projectData.forEach(proj => {
+                            const option = document.createElement('option');
+                            const keys = Object.keys(proj);
+                            // Dynamically set the value and text content using indices
+                            const valueKey = keys[1];
+                            const textKey = keys[0];
+                            option.value = proj[valueKey];
+                            option.textContent = proj[textKey];
+                            projDropdown.appendChild(option);
+                            projectLabel.innerHTML = toTitleCase(textKey);
+                        });
+
+                    } else {
+                        console.error('Project data is not available.');
+                    }
+                } catch (error) {
+                    console.error('Error fetching project data:', error);
+                } finally {
+                    hideLoader(() => {
+                        // Callback to handle post-loader actions if needed
+                    });
+                }
+            }
+
+            // Fetch project costs based on project and department
+            const updateProjectCost = async (deptid, projectId) => {
+                showLoader();
+                try {
+                    // Create parameters based on selected values
+                    const params = {
+                        deptid: deptid === 'ALL' ? 'ALL' : deptid,
+                        projid: projectId === 'ALL' ? 'ALL' : projectId
+                    };
+
+                    // Fetch the data using both parameters
+                    const result = await AxCallSqlDataAPI('AXPKEY000000010018', params);
+                    projectCostData = JSON.parse(result).getfundingagency.rows;
+
+                    // Clear previous project cost options and add "ALL" option
+                    costDropdown.innerHTML = '<option value="ALL">ALL</option>';
+
+                    // Clear table
+                    itemDescription.innerHTML = '';
+
+                    if (projectCostData && Array.isArray(projectCostData)) {
+                        projectCostData.forEach(projCost => {
+                            const option = document.createElement('option');
+                            const keys = Object.keys(projCost);
+                            // Dynamically set the value and text content using indices
+                            const valueKey = keys[1];
+                            const textKey = keys[1];
+                            option.value = projCost[valueKey];
+                            option.textContent = projCost[textKey];
+                            costDropdown.appendChild(option);
+                            agencyLabel.innerHTML = toTitleCase(textKey);
+                        });
+
+                    } else {
+                        console.error('Project cost data is not available.');
+                    }
+                } catch (error) {
+                    console.error('Error fetching project cost data:', error);
+                } finally {
+                    hideLoader(() => {
+                        // Callback to handle post-loader actions if needed
+                    });
+                }
+            }
+
+            // Handle selection and update department dropdown
+            const handleSelectionDept = async () => {
+                const selectedValue = deptDropdown.value;
+                const selectedProjValue = projDropdown.value;
+                if (selectedValue === "ALL") {
+                    console.log("All departments are selected.");
+                    await updateProject('ALL');
+                    await updateProjectCost(selectedProjValue, 'ALL');
+                } else {
+                    console.log("Selected department ID:", selectedValue);
+                    await updateProject(selectedValue);
+                    await updateProjectCost(selectedValue, selectedProjValue);
+                }
+            }
+
+            // Handle selection and update project dropdown
+            const handleSelectionProj = async () => {
+                const selectedDeptValue = deptDropdown.value;
+                const selectedProjValue = projDropdown.value;
+
+                if (selectedProjValue === "ALL") {
+                    console.log("All projects are selected.");
+                    await updateProjectCost(selectedDeptValue, 'ALL');
+                } else {
+                    console.log("Selected project ID:", selectedProjValue);
+                    await updateProjectCost(selectedDeptValue, selectedProjValue);
+                }
+            }
+
+            // Handle selection and update cost dropdown
+            const handleSelectionCost = () => {
+                const selectedCostName = costDropdown.value;
+                let filteredData;
+
+                if (selectedCostName === "ALL") {
+                    console.log("All funding agencies are selected.");
+                    filteredData = projectCostData;
+                } else {
+                    console.log("Selected funding agency:", selectedCostName);
+                    filteredData = projectCostData.filter(projCost => {
+                        const values = Object.values(projCost);
+                        return values[1] === selectedCostName;
+                    });
+                }
+
+                return filteredData;
+            }
+
+            // Generate the report table
+            const generateReportTable = (data) => {
+
+                if (!data || data.length === 0) {
+                    itemDescription.innerHTML = '<p>No data available.</p>';
+                    return;
+                }
+
+                // Extract column headers from the first row keys and sanitize
+                const headers = Object.keys(data[0]).map(key => key);
+
+                let tableHtml = `
+                        <table>
+                            <thead>
+                                <tr>
+                                    ${headers.map(header => `<th>${toTitleCase(header)}</th>`).join('')}
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+
+                data.forEach(row => {
+                    tableHtml += `
+                            <tr>
+                                ${headers.map(header => `<td>${row[header]}</td>`).join('')}
+                            </tr>
+                        `;
+                });
+
+                tableHtml += `
+                            </tbody>
+                        </table>
+                    `;
+
+                itemDescription.innerHTML = tableHtml;
+            }
+
+            // Initial fetch of departments
+            await fetchDepartments();
+
+            // Initial load
+            await handleSelectionDept();
+            await handleSelectionProj();
+
+            // Call handleSelection on dropdown change
+            deptDropdown.addEventListener('change', async () => {
+                await handleSelectionDept();
+            });
+
+            projDropdown.addEventListener('change', async () => {
+                await handleSelectionProj();
+            });
+
+            // Handle "Go" button click to generate the table
+            goButton.addEventListener('click', () => {
+                const selectedDeptValue = deptDropdown.value;
+                const selectedProjValue = projDropdown.value;
+                const selectedCostName = costDropdown.value;
+
+                console.log(`Generating report for Dept: ${selectedDeptValue}, Project: ${selectedProjValue}, Cost: ${selectedCostName}`);
+
+                // Retrieve filtered data based on selections
+                const filteredData = handleSelectionCost();
+
+                // Generate the report table with the filtered data
+                generateReportTable(filteredData);
+            });
+        });
+    </script>
+</body>
+
+</html>
