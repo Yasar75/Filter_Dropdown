@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../../UI/axpertUI/plugins.bundle.css">
     <link rel="stylesheet" href="../../UI/axpertUI/style.bundle.css">
     <link rel="stylesheet" href="../../ThirdParty/jquery-confirm-master/jquery-confirm.min.css">
+
     <script type="text/javascript" src="../../UI/axpertUI/plugins.bundle.js"></script>
     <script type="text/javascript" src="../../UI/axpertUI/scripts.bundle.js"></script>
     <script type="text/javascript" src="../../Js/noConflict.min.js"></script>
@@ -21,10 +22,26 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.js"></script>
 
     <style>
+        :root {
+            --bkg: hsla(201, 100%, 97%, 0.302);
+            --dark: hsl(0, 0%, 20%);
+            --white: hsl(60, 100%, 100%);
+            --grey: hsla(0, 0%, 95%, 0.712);
+            --lightgrey: hsla(0, 0%, 87%, 0.788);
+            --yellow: hsl(47, 100%, 50%);
+            --hoveryellow: hsl(47, 100%, 40%);
+            --lightyellow: hsla(42, 93%, 77%, 0.842);
+            --darkblue: hsl(214, 75%, 30%);
+            --lightblue: hsl(185, 60%, 90%);
+            --hoverblue: hsl(214, 80%, 40%);
+            --loaderlight: hsl(229, 13%, 67%);
+            --loaderdark: hsl(231, 12%, 42%);
+        }
+
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            background-color: hsla(201, 100%, 97%, 0.302);
+            background-color: var(--bkg);
             position: relative;
             min-height: 100vh;
         }
@@ -48,7 +65,7 @@
             font-size: 16px;
             font-weight: bold;
             margin-bottom: 5px;
-            color: hsl(0, 0%, 20%);
+            color: var(--dark);
         }
 
         .dropdown {
@@ -59,28 +76,28 @@
             font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
             border-radius: 7px;
             transition: all ease 0.3s;
-            box-shadow: 0 2px 15px 6px hsla(0, 0%, 95%, 0.712);
-            border: 2px solid hsl(47, 100%, 50%);
-            background-color: white;
-            color: hsl(0, 0%, 20%);
+            box-shadow: 0 2px 15px 6px var(--grey);
+            border: 2px solid var(--yellow);
+            background-color: var(--white);
+            color: var(--dark);
         }
 
         .dropdown:focus {
             outline: none;
-            border-color: hsl(47, 100%, 50%);
+            border-color: var(--yellow);
         }
 
         .dropdown option {
-            background-color: white;
-            color: hsl(0, 0%, 20%);
+            background-color: var(--white);
+            color: var(--dark);
             font-weight: 500;
             font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
         }
 
         .description {
             font-size: 16px;
-            color: hsl(0, 0%, 20%);
-            margin-top: 10px;
+            color: var(--dark);
+            margin-top: 85px;
             text-align: center;
             font-weight: 800;
         }
@@ -91,62 +108,42 @@
             border-spacing: 0;
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 2px 15px 6px hsla(0, 0%, 95%, 0.712);
+            box-shadow: 0 2px 15px 6px var(--grey);
         }
 
         th,
         td {
             padding: 10px;
             text-align: left;
-            border: 1px solid hsla(0, 0%, 87%, 0.788);
+            border: 1px solid var(--lightgrey);
         }
 
         th {
             font-weight: bold;
-            background-color: hsla(42, 93%, 77%, 0.842);
+            background-color: var(--lightyellow);
         }
 
         tr:nth-child(even) {
-            background-color: hsl(184, 58.77%, 94.27%);
+            background-color: var(--lightblue);
         }
 
         tr:hover {
-            background-color: hsla(0, 0%, 95%, 0.938);
+            background-color: var(--grey);
         }
 
-        .loader {
+        .loader-box-wrapper {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border: 16px solid hsl(229, 13%, 67%);
-            border-top: 16px solid hsl(231, 12%, 42%);
-            border-radius: 50%;
-            width: 100px;
-            height: 100px;
-            animation: spin 2s linear infinite;
-            display: none;
+            transform: translate(270%, 100%);
             z-index: 1000;
         }
 
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Style for the Go button */
         .go-button {
             margin-top: 10px;
             padding: 10px 20px;
             font-size: 16px;
             font-weight: bold;
-            color: white;
-            background-color: hsl(47, 100%, 50%);
+            color: var(--white);
+            background-color: var(--yellow);
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -154,41 +151,118 @@
         }
 
         .go-button:hover {
-            background-color: hsl(47, 100%, 60%);
+            background-color: var(--hoveryellow);
+        }
+
+        .open-filter-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--darkblue);
+            color: var(--white);
+            border: none;
+            border-radius: 50px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: width 0.3s ease, background-color 0.3s ease;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 50px;
+        }
+
+        .open-filter-button:hover {
+            width: 120px;
+            background-color: var(--hoverblue);
+            font-weight: 600;
+        }
+
+        .open-filter-button .button-text {
+            opacity: 0;
+            margin-left: 0;
+            transition: opacity 0.3s ease, margin-left 0.3s ease;
+        }
+
+        .open-filter-button:hover .button-text {
+            opacity: 1;
+            margin-left: 5px;
+        }
+
+        .material-icons {
+            overflow: visible;
+        }
+
+        #body {
+            margin-top: 70px;
         }
     </style>
 </head>
 
 <body>
-    <div class="loader" id="loader"></div>
-
-    <div class="dropdown-container">
-        <div class="dropdown-group">
-            <label id="departmentname" for="deptDropdown"></label>
-            <select id="deptDropdown" class="dropdown" required="">
-                <!-- Options will be added dynamically -->
-            </select>
-        </div>
-        <div class="dropdown-group">
-            <label id="projectname" for="projDropdown"></label>
-            <select id="projDropdown" class="dropdown" required="">
-                <!-- Options will be added dynamically -->
-            </select>
-        </div>
-        <div class="dropdown-group">
-            <label id="fundingAgency" for="costDropdown"></label>
-            <select id="costDropdown" class="dropdown" required="">
-                <!-- Options will be added dynamically -->
-            </select>
+    <!-- Page Loading Amimation -->
+    <div id="loader" class="page-loader rounded-2 bg-radial-gradient">
+        <div class="loader-box-wrapper d-flex bg-white p-20 shadow rounded">
+            <span class="loader"></span>
         </div>
     </div>
 
-    <!-- Go Button -->
-    <button class="go-button" id="goButton">Go</button>
+    <!-- Button to trigger modal -->
+    <button type="button" class="open-filter-button" data-bs-toggle="modal" data-bs-target="#filterModal">
+        <span class="material-icons">sort</span>&#160;&#160;
+        <span class="button-text" style="margin-left: -5px;">Open Filter</span>
+    </button>
 
+    <!-- Modal -->
+    <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filterModalLabel">Filter Options</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="filter">
+                        <div class="dropdown-container">
+                            <div class="dropdown-group">
+                                <label id="departmentname" for="deptDropdown">
+                                    <!-- Label will be added dynamically -->
+                                </label>
+                                <select id="deptDropdown" class="dropdown" required>
+                                    <!-- Options will be added dynamically -->
+                                </select>
+                            </div>
+                            <div class="dropdown-group">
+                                <label id="projectname" for="projDropdown">
+                                    <!-- Label will be added dynamically -->
+                                </label>
+                                <select id="projDropdown" class="dropdown" required>
+                                    <!-- Options will be added dynamically -->
+                                </select>
+                            </div>
+                            <div class="dropdown-group">
+                                <label id="fundingAgency" for="costDropdown">
+                                    <!-- Label will be added dynamically -->
+                                </label>
+                                <select id="costDropdown" class="dropdown" required>
+                                    <!-- Options will be added dynamically -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Go Button -->
+                        <button class="go-button" id="goButton" data-bs-dismiss="modal">Go</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Report -->
     <div id="reportDescription" class="description"></div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', async function () {
+        document.addEventListener('DOMContentLoaded', async () => {
             const departmentLabel = document.getElementById('departmentname');
             const deptDropdown = document.getElementById('deptDropdown');
             const projectLabel = document.getElementById('projectname');
@@ -468,5 +542,4 @@
         });
     </script>
 </body>
-
 </html>
