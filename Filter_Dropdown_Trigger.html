@@ -25,8 +25,10 @@
         :root {
             --bkg: hsla(201, 100%, 97%, 0.302);
             --dark: hsl(0, 0%, 20%);
+            --lightdark: hsl(48, 23%, 13%);
             --white: hsl(60, 100%, 100%);
             --grey: hsla(0, 0%, 95%, 0.712);
+            --darkgrey: hsl(43, 3%, 48%);
             --lightgrey: hsla(0, 0%, 87%, 0.788);
             --yellow: hsl(47, 100%, 50%);
             --hoveryellow: hsl(47, 100%, 40%);
@@ -38,6 +40,10 @@
             --loaderdark: hsl(231, 12%, 42%);
         }
 
+        #body {
+            margin-top: 70px;
+        }
+
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -45,6 +51,51 @@
             position: relative;
             min-height: 100vh;
         }
+
+        .loader-box-wrapper {
+            position: absolute;
+            transform: translate(270%, 100%);
+            z-index: 1000;
+        }
+
+        .open-filter-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--darkblue);
+            color: var(--white);
+            border: none;
+            border-radius: 50px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: width 0.3s ease, background-color 0.3s ease;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 50px;
+        }
+
+        .open-filter-button:hover {
+            width: 120px;
+            background-color: var(--hoverblue);
+            font-weight: 600;
+        }
+
+        .open-filter-button .button-text {
+            opacity: 0;
+            margin-left: -3px;
+            transition: opacity 0.3s ease, margin-left 0.3s ease;
+        }
+
+        .open-filter-button:hover .button-text {
+            opacity: 1;
+        }
+
+        .material-icons {
+            overflow: visible;
+        }
+
 
         .dropdown-container {
             display: flex;
@@ -94,10 +145,61 @@
             font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
         }
 
+        .go-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--white);
+            background-color: var(--yellow);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .go-button:hover {
+            background-color: var(--hoveryellow);
+        }
+
+        .midFrame{
+            margin-top: 50px;
+        }
+
+        #filterDisplay {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .filterString {
+            font-weight: bold;
+            font-size: 15px;
+            padding-left: 5px;
+        }
+
+        .clear-button {
+            margin-left: 20px;
+            display: none;
+            padding: 0px 5px;
+            font-size: 15px;
+            font-weight: bold;
+            color: var(--white);
+            background-color: var(--darkgrey);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .clear-button:hover {
+            background-color: var(--lightdark);
+        }
+
         .description {
             font-size: 16px;
             color: var(--dark);
-            margin-top: 85px;
+            margin-top: 5px;
             text-align: center;
             font-weight: 800;
         }
@@ -130,72 +232,6 @@
         tr:hover {
             background-color: var(--grey);
         }
-
-        .loader-box-wrapper {
-            position: absolute;
-            transform: translate(270%, 100%);
-            z-index: 1000;
-        }
-
-        .go-button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            color: var(--white);
-            background-color: var(--yellow);
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .go-button:hover {
-            background-color: var(--hoveryellow);
-        }
-
-        .open-filter-button {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: var(--darkblue);
-            color: var(--white);
-            border: none;
-            border-radius: 50px;
-            padding: 10px;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            transition: width 0.3s ease, background-color 0.3s ease;
-            overflow: hidden;
-            white-space: nowrap;
-            width: 50px;
-        }
-
-        .open-filter-button:hover {
-            width: 120px;
-            background-color: var(--hoverblue);
-            font-weight: 600;
-        }
-
-        .open-filter-button .button-text {
-            opacity: 0;
-            margin-left: 0;
-            transition: opacity 0.3s ease, margin-left 0.3s ease;
-        }
-
-        .open-filter-button:hover .button-text {
-            opacity: 1;
-            margin-left: 5px;
-        }
-
-        .material-icons {
-            overflow: visible;
-        }
-
-        #body {
-            margin-top: 70px;
-        }
     </style>
 </head>
 
@@ -210,7 +246,7 @@
     <!-- Button to trigger modal -->
     <button type="button" class="open-filter-button" data-bs-toggle="modal" data-bs-target="#filterModal">
         <span class="material-icons">sort</span>&#160;&#160;
-        <span class="button-text" style="margin-left: -5px;">Open Filter</span>
+        <span class="button-text">Open Filter</span>
     </button>
 
     <!-- Modal -->
@@ -258,20 +294,30 @@
         </div>
     </div>
 
-    <!-- Table Report -->
-    <div id="reportDescription" class="description"></div>
+    <div class="midFrame">
+        <!-- Filter Display Area -->
+        <div id="filterDisplay">
+            <span id="selectedFilters" class="filterString"></span>
+            <button id="clearFilterButton" class="clear-button">Clear Filter</button>
+        </div>
+
+        <!-- Table Report -->
+        <div id="reportDescription" class="description"></div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
+            const loader = document.getElementById('loader');
             const departmentLabel = document.getElementById('departmentname');
             const deptDropdown = document.getElementById('deptDropdown');
             const projectLabel = document.getElementById('projectname');
             const projDropdown = document.getElementById('projDropdown');
             const agencyLabel = document.getElementById('fundingAgency');
             const costDropdown = document.getElementById('costDropdown');
-            const itemDescription = document.getElementById('reportDescription');
-            const loader = document.getElementById('loader');
             const goButton = document.getElementById('goButton');
+            const selectedFilter = document.getElementById('selectedFilter');
+            const clearFilterButton = document.getElementById('clearFilterButton');
+            const itemDescription = document.getElementById('reportDescription');
 
             let projectCostData = [];
 
@@ -456,6 +502,7 @@
             // Handle selection and update cost dropdown
             const handleSelectionCost = () => {
                 const selectedCostName = costDropdown.value;
+
                 let filteredData;
 
                 if (selectedCostName === "ALL") {
@@ -468,7 +515,6 @@
                         return values[1] === selectedCostName;
                     });
                 }
-
                 return filteredData;
             }
 
@@ -512,7 +558,7 @@
             // Initial fetch of departments
             await fetchDepartments();
 
-            // Initial load
+            // Initial call to handle the display for default state
             await handleSelectionDept();
             await handleSelectionProj();
 
@@ -525,8 +571,30 @@
                 await handleSelectionProj();
             });
 
-            // Handle "Go" button click to generate the table
+
+            // Function to display selected filter values and show/hide Clear Filter button
+            const updateFilterDisplay = async () => {
+                const selectedDeptText = deptDropdown.options[deptDropdown.selectedIndex].text;
+                const selectedProjText = projDropdown.options[projDropdown.selectedIndex].text;
+                const selectedCostText = costDropdown.options[costDropdown.selectedIndex].text;
+
+                // Construct filter string
+                const filterText = `${selectedDeptText} > ${selectedProjText} > ${selectedCostText}`;
+                selectedFilters.textContent = filterText;
+
+                // Show Clear Filter button if any of the dropdowns are not 'ALL'
+                if (deptDropdown.value !== 'ALL' || projDropdown.value !== 'ALL' || costDropdown.value !== 'ALL') {
+                    clearFilterButton.style.display = 'block';
+                } else {
+                    clearFilterButton.style.display = 'none';
+                }
+            };
+
+            // Handle "Go" button click to update filter display and generate the table
             goButton.addEventListener('click', () => {
+                // Update the filter display
+                updateFilterDisplay();
+
                 const selectedDeptValue = deptDropdown.value;
                 const selectedProjValue = projDropdown.value;
                 const selectedCostName = costDropdown.value;
@@ -537,6 +605,30 @@
                 const filteredData = handleSelectionCost();
 
                 // Generate the report table with the filtered data
+                generateReportTable(filteredData);
+            });
+
+            // Handle "Clear Filter" button click
+            clearFilterButton.addEventListener('click', async () => {
+                // Reset all dropdowns to 'ALL'
+                deptDropdown.value = 'ALL';
+                projDropdown.value = 'ALL';
+                costDropdown.value = 'ALL';
+
+                const selectedDeptValue = deptDropdown.value;
+                const selectedProjValue = projDropdown.value;
+                const selectedCostName = costDropdown.value;
+
+                await handleSelectionDept();
+                await handleSelectionProj();
+                // Update the filter display and hide the clear button
+                await updateFilterDisplay();
+
+
+                // Call resetFilteredData to ensure data is reset to "ALL" selection
+                const filteredData = projectCostData;
+
+                // Generate the report table for the "ALL" selection
                 generateReportTable(filteredData);
             });
         });
